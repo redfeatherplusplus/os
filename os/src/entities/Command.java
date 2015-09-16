@@ -18,6 +18,7 @@ public abstract class Command {
 	//encapsulated in the constructor methods of specific commands
 	
 	//getter and setter methods
-	public void setCmdType(String type) {this.type = type;}
-	public void setCmdId(String id) {this.id = id;}
+	public void setCmdType(String type) { this.type = type; }
+	public void setCmdId(String id) { this.id = id; }
+	public String getCmdId(){ return id; }
 }	

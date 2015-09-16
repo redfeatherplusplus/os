@@ -2,18 +2,23 @@ package parser;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import entities.Batch;
 import entities.CmdCommand;
 import entities.Command;
 import entities.FileCommand;
@@ -27,74 +32,84 @@ import errorLogging.ProcessException;
  */
 public class BatchParser
 {
-
-	public static void parse(String filename)
+	//return a Batch class extracted from a given xml file
+	public static Batch parse(String filename) 
+			throws ParserConfigurationException, SAXException, IOException, ProcessException
 	{
-		try {
-			if(!filename.equals(null)) {
-				//we have received a filename, attempt to open and read that file
-				System.out.println("Opening " + filename);
-				File f = new File(filename);
-				
-				FileInputStream fis = new FileInputStream(f);
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-				Document doc = dBuilder.parse(fis);
+		if(!filename.equals(null)) {
+			//we have received a filename, attempt to open and read that file
+			System.out.println("Opening " + filename);
+			File f = new File(filename);
+			
+			//file opened successfully, create a batch to add commands to
+			Batch batch = new Batch();
+			
+			//extract xml elements from the input file
+			FileInputStream fis = new FileInputStream(f);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fis);
 
-				Element pnode = doc.getDocumentElement();
-				NodeList nodes = pnode.getChildNodes();
-				for (int idx = 0; idx < nodes.getLength(); idx++) {
-					Node node = nodes.item(idx);
-					
-					//for each line of the batch file parse the command
-					if (node.getNodeType() == Node.ELEMENT_NODE) {
-						Element elem = (Element) node;
-						parseCommand(elem);
-					}
+			//for every xml element, extract a command
+			Element pnode = doc.getDocumentElement();
+			NodeList nodes = pnode.getChildNodes();
+			for (int idx = 0; idx < nodes.getLength(); idx++) {
+				Node node = nodes.item(idx);
+				
+				//for each line of the batch file parse the command
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element elem = (Element) node;
+					Command cmd = parseCommand(elem);
+					batch.addcommand(cmd);
 				}
 			}
-			else {
-				//print error, possibly use ProcessException.java?
-				System.out.println("Error, recieved empty string as filename.");
-			}
+			
+			//xml file parsed successfully and batch created, return batch
+			return(batch);
 		}
-		catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+		else {
+			//received empty string as filename, print error accordingly
+			throw new ProcessException("Error, recieved empty string as filename.");
 		}
 	}
 
-	private static void parseCommand(Element elem) throws ProcessException
+	private static Command parseCommand(Element elem) throws ProcessException
 	{
 		String cmdName = elem.getNodeName();
+		Command cmd;
 		
 		//note: rather than make an empty command class, and then immediately parse an element 
 		//with that command class, we chose to have each individual command class's constructor
 		//parse the given element. In other words, a command is created by parsing an element.
 		
+		//check if the element contains a command
 		if (cmdName == null) {
 			throw new ProcessException("unable to parse command from " + elem.getTextContent());
 		}
 		else if ("wd".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing wd");
-			Command cmd = new WDCommand(elem);
+			cmd = new WDCommand(elem);
 		}
 		else if ("file".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing file");
-			Command cmd = new FileCommand(elem);
+			cmd = new FileCommand(elem);
 		}
 		else if ("cmd".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing cmd");
-			Command cmd = new CmdCommand(elem);
+			cmd = new CmdCommand(elem);
 			//parseCmd(elem); // Example of parsing a cmd element
 		}
-		else if ("pipe".equalsIgnoreCase(cmdName)) {
+		/*else if ("pipe".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing pipe");
-			//Command cmd = PipeCommand.parse(elem);
-		}
+			Command cmd = PipeCommand(elem);
+		}*/
 		else {
 			throw new ProcessException("Unknown command " + cmdName + " from: " + elem.getBaseURI());
 		}
+
+		//we have successfully parsed a command, return the command
+		return(cmd);
+		
 	}
 
 	/* 
