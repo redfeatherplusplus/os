@@ -42,7 +42,6 @@ public class BatchProcessingApp {
 			System.out.println("Error, failed to create batch:");
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			//f
 		}
 	}
 	
