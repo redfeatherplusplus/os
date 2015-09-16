@@ -14,11 +14,10 @@ public abstract class Command {
 	public void execute() {
 	}
 	
-	//note parse() not included since it is a static command
+	//note parse() not included since its functionality is
+	//encapsulated in the constructor methods of specific commands
 	
-	//setter methods
+	//getter and setter methods
 	public void setCmdType(String type) {this.type = type;}
 	public void setCmdId(String id) {this.id = id;}
-	
-	public String getCmdId(){return id;}
 }	

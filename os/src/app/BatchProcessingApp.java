@@ -11,6 +11,8 @@ public class BatchProcessingApp {
 		else {
 			filename = "work/batch1.dos.xml";
 			BatchParser.parse(filename);
+			
+			//note, try to utilize errorLogging in exceptions
 		}
 	}
 }
