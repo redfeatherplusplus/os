@@ -7,7 +7,7 @@ public abstract class Command {
 	
 	//this method returns the command given and its parameters
 	public String describe() {
-		return(this.toString());
+		return("Executing '" + id + "' with arguments: " + this.getArguments());
 	}
 	
 	//this method executes a given command
@@ -21,4 +21,5 @@ public abstract class Command {
 	public void setCmdType(String type) { this.type = type; }
 	public void setCmdId(String id) { this.id = id; }
 	public String getCmdId(){ return id; }
+	public abstract String getArguments();
 }	

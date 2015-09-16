@@ -31,5 +31,10 @@ public class WDCommand extends Command {
 		System.out.println("Path: " + path);
 
 	}
-
+	
+	//getter and setter methods
+	@Override
+	public String getArguments() {
+		return ("path: " + path);
+	}
 }

@@ -62,4 +62,11 @@ public class CmdCommand extends Command {
 			System.out.println("outID: " + outID);
 		}
 	}
+
+	//getter and setter methods
+	@Override
+	public String getArguments() {
+		return ("path: " + path + ", args: " + cmdArgs.toString() + 
+				", inID: " + inID + ", outID: " + outID);
+	}
 }
