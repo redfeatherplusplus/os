@@ -23,10 +23,23 @@ public class PipeCommand extends Command {
 		this.setCmdId(id);
 	}
 	
+	//create a process to execute the current command
+	@Override
+	public void execute(String workingDir) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	//getter and setter methods
 	@Override
 	public String getArguments() {
 		return ("Pipe not yet implemented");
+	}
+
+	@Override
+	public String getPath() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

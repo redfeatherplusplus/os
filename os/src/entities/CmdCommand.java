@@ -1,7 +1,12 @@
 package entities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.w3c.dom.Element;
@@ -62,11 +67,78 @@ public class CmdCommand extends Command {
 			System.out.println("outID: " + outID);
 		}
 	}
+	
+	//create a process to execute the current command
+	@Override
+	public void execute(String workingDir) 
+			throws InterruptedException, IOException {
+		//get the current command map to enable ID pairing
+		Map<String, Command> commands = Batch.getSingleton().getCommands();
+		
+		//create a list that maintains the given command and its arguments
+		List<String> command = new ArrayList<String>();
+		command.add(path);
+		for (String arg : cmdArgs)  {
+			command.add(arg);
+		}
+
+		//create a new process that executes this command
+		ProcessBuilder builder = new ProcessBuilder(command);
+		builder.directory(new File(workingDir));
+		File wd = builder.directory();
+		
+		//set input file if desired
+		if (!(inID == null || inID.isEmpty())) {
+			File inFile = new File(wd, commands.get(inID).getPath());	
+			builder.redirectInput(inFile);
+		}
+
+		//set output file if desired
+		if (!(outID == null || outID.isEmpty())) {
+			File outFile = new File(wd, commands.get(outID).getPath());	
+			builder.redirectOutput(outFile);
+		}
+		
+		//execute the process
+		Process process = builder.start();
+		process.waitFor();
+
+		//execution successful, print out message indicating so
+		System.out.println("Terminated! ExitValue: " + process.exitValue());
+	}
 
 	//getter and setter methods
 	@Override
 	public String getArguments() {
-		return ("path: " + path + ", args: " + cmdArgs.toString() + 
-				", inID: " + inID + ", outID: " + outID);
+		//throw all non-null string arguments into a string builder
+		StringBuilder arguements = new StringBuilder();
+		
+		//add the path of the executable
+		arguements.append("path: " + path + ", ");
+
+		//add the executable's arguments 
+		if (!cmdArgs.isEmpty()) {
+			arguements.append("args: " + cmdArgs.toString() + ", ");
+		}
+
+		//add the file to be directed to the executable's stdin
+		if (!(inID == null || inID.isEmpty())) {
+			arguements.append("inID: " + inID + ", ");
+		}
+
+		//add the file to direct the executable's stdout to
+		if (!(outID == null || outID.isEmpty())) {
+			arguements.append("outID: " + outID + ", ");
+		}
+		
+		//remove leading comma and return arguments
+		arguements.delete(arguements.length() - 2, arguements.length());
+		return (arguements.toString());
+	}
+
+	@Override
+	public String getPath() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

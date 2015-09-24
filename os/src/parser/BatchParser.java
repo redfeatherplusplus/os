@@ -33,7 +33,7 @@ import errorLogging.ProcessException;
 public class BatchParser
 {
 	//return a Batch class extracted from a given xml file
-	public static Batch parse(String filename) 
+	public static void parse(String filename) 
 			throws ParserConfigurationException, SAXException, IOException, ProcessException
 	{
 		if(!filename.equals(null)) {
@@ -42,7 +42,7 @@ public class BatchParser
 			File f = new File(filename);
 			
 			//file opened successfully, create a batch to add commands to
-			Batch batch = new Batch();
+			Batch batch = Batch.getSingleton();
 			
 			//extract xml elements from the input file
 			FileInputStream fis = new FileInputStream(f);
@@ -57,15 +57,13 @@ public class BatchParser
 				Node node = nodes.item(idx);
 				
 				//for each line of the batch file parse the command
+				//after a command is added, add that command to the batch
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
 					Element elem = (Element) node;
 					Command cmd = parseCommand(elem);
 					batch.addcommand(cmd);
 				}
 			}
-			
-			//xml file parsed successfully and batch created, return batch
-			return(batch);
 		}
 		else {
 			//received empty string as filename, print error accordingly

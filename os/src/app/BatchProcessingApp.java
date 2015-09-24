@@ -1,7 +1,9 @@
 package app;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,10 +32,11 @@ public class BatchProcessingApp {
 
 		//if a filename was passed, try to create a batch from that file 
 		try {
-			Batch batch = BatchParser.parse(filename);
+			//parse the batch xml file into the singleton batch class
+			BatchParser.parse(filename);
 			
-			//print out the batch for testing
-			System.out.println("Batch: " + batch.getCommands().toString());
+			//get the current batch singleton and execute the batch
+			Batch batch = Batch.getSingleton();
 			executeBatch(batch);
 		} 
 		catch (ParserConfigurationException | SAXException | IOException
@@ -47,11 +50,17 @@ public class BatchProcessingApp {
 	
 	//execute the batch, describe each command as it is executed
 	public static void executeBatch(Batch batch) {
-		Map<String, Command> commands = batch.getCommands();
-
-		//to test the describe method, describe every command
-		//for (Command command : commands.values()) {
-		//	System.out.println(command.describe());
-		//}
+		List<Command> commandList = batch.getCommandList();
+		
+		//describe and execute every command in the list sequentially
+		for (Command command : commandList) {
+		System.out.println(command.describe());
+			try {
+				command.execute(batch.getWorkingDir());
+			} catch (InterruptedException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

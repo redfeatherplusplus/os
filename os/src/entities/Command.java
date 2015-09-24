@@ -1,5 +1,8 @@
 package entities;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public abstract class Command {
 	
 	private String type;  //type of command being processed      
@@ -10,9 +13,9 @@ public abstract class Command {
 		return("Executing '" + id + "' with arguments: " + this.getArguments());
 	}
 	
-	//this method executes a given command
-	public void execute() {
-	}
+	//executes the current command
+	public abstract void execute(String workingDir) 
+			throws InterruptedException, IOException;
 	
 	//note parse() not included since its functionality is
 	//encapsulated in the constructor methods of specific commands
@@ -22,4 +25,5 @@ public abstract class Command {
 	public void setCmdId(String id) { this.id = id; }
 	public String getCmdId(){ return id; }
 	public abstract String getArguments();
+	public abstract String getPath();
 }	

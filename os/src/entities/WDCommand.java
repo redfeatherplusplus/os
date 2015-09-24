@@ -30,11 +30,22 @@ public class WDCommand extends Command {
 		}
 		System.out.println("Path: " + path);
 
+		//set the workingDir of the batch when a WDCommand is parsed
+		Batch.getSingleton().setWorkingDir(path);
+	}
+	
+	//create a process to execute the current command
+	@Override
+	public void execute(String workingDir) {
+		//note that no actual execution was done
+		System.out.println("Nothing to execute for command: " + this.getCmdId());
 	}
 	
 	//getter and setter methods
 	@Override
 	public String getArguments() {
+		//path is the only argument to return and is a mandatory argument
 		return ("path: " + path);
 	}
+	public String getPath() { return path; }
 }
