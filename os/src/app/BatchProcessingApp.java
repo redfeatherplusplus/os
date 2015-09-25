@@ -1,10 +1,7 @@
 package app;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -27,7 +24,7 @@ public class BatchProcessingApp {
 			filename = args[0];
 		}
 		else {
-			filename = "work/batch1.dos.xml";
+			filename = "work/batch3.xml";
 		}
 
 		//if a filename was passed, try to create a batch from that file 
@@ -50,7 +47,11 @@ public class BatchProcessingApp {
 	
 	//execute the batch, describe each command as it is executed
 	public static void executeBatch(Batch batch) {
+		//get the list of commands to execute
 		List<Command> commandList = batch.getCommandList();
+		
+		//indicate that command execution is beginning
+		System.out.println("Beginning execution of commands...");
 		
 		//describe and execute every command in the list sequentially
 		for (Command command : commandList) {
@@ -58,7 +59,10 @@ public class BatchProcessingApp {
 			try {
 				command.execute(batch.getWorkingDir());
 			} catch (InterruptedException | IOException e) {
-				// TODO Auto-generated catch block
+				//error executing command
+				System.out.println("Error, failure during command execution: "
+						+ command.getCmdId());
+				System.out.println(e.getMessage());
 				e.printStackTrace();
 			}
 		}

@@ -30,12 +30,13 @@ public class PipeCommand extends Command {
 		
 	}
 	
-	//getter and setter methods
+	//return a string describing this command's arguments
 	@Override
 	public String getArguments() {
 		return ("Pipe not yet implemented");
 	}
 
+	//getter and setter methods
 	@Override
 	public String getPath() {
 		// TODO Auto-generated method stub

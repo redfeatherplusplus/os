@@ -107,7 +107,7 @@ public class CmdCommand extends Command {
 		System.out.println("Terminated! ExitValue: " + process.exitValue());
 	}
 
-	//getter and setter methods
+	//return a string describing this command's arguments
 	@Override
 	public String getArguments() {
 		//throw all non-null string arguments into a string builder
@@ -136,9 +136,7 @@ public class CmdCommand extends Command {
 		return (arguements.toString());
 	}
 
+	//getter and setter methods
 	@Override
-	public String getPath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getPath() { return path; }
 }

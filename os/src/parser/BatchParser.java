@@ -87,6 +87,9 @@ public class BatchParser
 		else if ("wd".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing wd");
 			cmd = new WDCommand(elem);
+			
+			//set the working directory of the batch singleton
+			Batch.getSingleton().setWorkingDir(cmd.getPath());
 		}
 		else if ("file".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing file");
@@ -95,7 +98,6 @@ public class BatchParser
 		else if ("cmd".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing cmd");
 			cmd = new CmdCommand(elem);
-			//parseCmd(elem); // Example of parsing a cmd element
 		}
 		/*else if ("pipe".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing pipe");

@@ -38,11 +38,14 @@ public class FileCommand extends Command {
 		System.out.println("Nothing to execute for command: " + this.getCmdId());
 	}
 	
-	//getter and setter methods
+	//return a string describing this command's arguments
 	@Override
 	public String getArguments() {
 		//path is the only argument to return and is a mandatory argument
 		return ("path: " + path);
 	}
+
+	//getter and setter methods
+	@Override
 	public String getPath() { return path; }
 }

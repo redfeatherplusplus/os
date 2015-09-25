@@ -17,7 +17,7 @@ public class Batch {
 	private Map<String, Command> commands;               //map of commands to command id's
 	
 	//constructor
-	public Batch() {
+	private Batch() {
 		commandList = new ArrayList<Command>();
 		commands = new HashMap<String, Command>();
 	}

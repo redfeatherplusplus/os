@@ -29,9 +29,6 @@ public class WDCommand extends Command {
 			throw new ProcessException("Missing PATH in FILE Command");
 		}
 		System.out.println("Path: " + path);
-
-		//set the workingDir of the batch when a WDCommand is parsed
-		Batch.getSingleton().setWorkingDir(path);
 	}
 	
 	//create a process to execute the current command
@@ -41,11 +38,14 @@ public class WDCommand extends Command {
 		System.out.println("Nothing to execute for command: " + this.getCmdId());
 	}
 	
-	//getter and setter methods
+	//return a string describing this command's arguments
 	@Override
 	public String getArguments() {
 		//path is the only argument to return and is a mandatory argument
 		return ("path: " + path);
 	}
+	
+	//getter and setter methods
+	@Override
 	public String getPath() { return path; }
 }
