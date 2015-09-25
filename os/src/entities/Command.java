@@ -1,6 +1,5 @@
 package entities;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public abstract class Command {
@@ -18,7 +17,7 @@ public abstract class Command {
 			throws InterruptedException, IOException;
 	
 	//note parse() not included since its functionality is
-	//encapsulated in the constructor methods of specific commands
+	//implemented in the constructor methods of specific commands
 	
 	//getter and setter methods
 	public void setCmdType(String type) { this.type = type; }

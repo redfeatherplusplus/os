@@ -1,26 +1,40 @@
 package entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import errorLogging.ProcessException;
 
 public class PipeCommand extends Command {
 	
 	//PipeCommand arguments
-	String CmdElements;  //to be implemented
+	List<CmdCommand> filters = new ArrayList<CmdCommand>();
 	
 	//create a new PipeCommand by parsing through the elements
 	public PipeCommand(Element elem) throws ProcessException {
 		//indicate that this command is a "pipe" command
 		this.setCmdType("pipe");
 		
-		//set the id of the command
-		String id = elem.getAttribute("id");
-		if (id == null || id.isEmpty()) {
-			throw new ProcessException("Missing ID in FILE Command");
+		//get a list of filters to connect with pipes
+		NodeList myNodeList = elem.getChildNodes();
+		for (int idx = 0; idx < myNodeList.getLength(); idx++) {
+			Node node = myNodeList.item(idx);
+			
+			//add each CmdCommand to the list of filters
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element filter = (Element) node;
+				filters.add(new CmdCommand(filter));
+			}
 		}
-		System.out.println("ID: " + id);
-		this.setCmdId(id);
+		
+		//describe the cmd commands
+		for (CmdCommand filter : filters) {
+			System.out.println(filter.describe());
+		}
 	}
 	
 	//create a process to execute the current command

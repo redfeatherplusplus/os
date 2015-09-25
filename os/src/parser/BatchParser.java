@@ -41,7 +41,7 @@ public class BatchParser
 			System.out.println("Opening " + filename);
 			File f = new File(filename);
 			
-			//file opened successfully, create a batch to add commands to
+			//file opened successfully, add commands to the batch singleton
 			Batch batch = Batch.getSingleton();
 			
 			//extract xml elements from the input file
@@ -99,61 +99,15 @@ public class BatchParser
 			System.out.println("Parsing cmd");
 			cmd = new CmdCommand(elem);
 		}
-		/*else if ("pipe".equalsIgnoreCase(cmdName)) {
+		else if ("pipe".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing pipe");
-			Command cmd = PipeCommand(elem);
-		}*/
+			cmd = new PipeCommand(elem);
+		}
 		else {
 			throw new ProcessException("Unknown command " + cmdName + " from: " + elem.getBaseURI());
 		}
 
 		//we have successfully parsed a command, return the command
 		return(cmd);
-		
 	}
-
-	/* 
-	 * An example of parsing a CMD element 
-	 * THIS LOGIC BELONGS IN INDIVIDUAL Command subclasses
-	 *
-	public static void parseCmd(Element elem) throws ProcessException
-	{
-		String id = elem.getAttribute("id");
-		if (id == null || id.isEmpty()) {
-			throw new ProcessException("Missing ID in CMD Command");
-		}
-		System.out.println("ID: " + id);
-		
-		String path = elem.getAttribute("path");
-		if (path == null || path.isEmpty()) {
-			throw new ProcessException("Missing PATH in CMD Command");
-		}
-		System.out.println("Path: " + path);
-
-		// Arguments must be passed to ProcessBuilder as a list of
-		// individual strings. 
-		List<String> cmdArgs = new ArrayList<String>();
-		String arg = elem.getAttribute("args");
-		if (!(arg == null || arg.isEmpty())) {
-			StringTokenizer st = new StringTokenizer(arg);
-			while (st.hasMoreTokens()) {
-				String tok = st.nextToken();
-				cmdArgs.add(tok);
-			}
-		}
-		for(String argi: cmdArgs) {
-			System.out.println("Arg " + argi);
-		}
-
-		String inID = elem.getAttribute("in");
-		if (!(inID == null || inID.isEmpty())) {
-			System.out.println("inID: " + inID);
-		}
-
-		String outID = elem.getAttribute("out");
-		if (!(outID == null || outID.isEmpty())) {
-			System.out.println("outID: " + outID);
-		}
-	}
-	*/
 }

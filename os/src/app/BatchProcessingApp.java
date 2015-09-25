@@ -24,7 +24,7 @@ public class BatchProcessingApp {
 			filename = args[0];
 		}
 		else {
-			filename = "work/batch3.xml";
+			filename = "work/batch4.xml";
 		}
 
 		//if a filename was passed, try to create a batch from that file 
