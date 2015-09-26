@@ -2,11 +2,7 @@ package parser;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,13 +22,9 @@ import entities.PipeCommand;
 import entities.WDCommand;
 import errorLogging.ProcessException;
 
-/**
- * Example of using Java's built-in DOM XML parsing to
- * parse one of the XML batch files. 
- */
 public class BatchParser
 {
-	//return a Batch class extracted from a given xml file
+	//parse the given xml file into the batch singleton
 	public static void parse(String filename) 
 			throws ParserConfigurationException, SAXException, IOException, ProcessException
 	{
