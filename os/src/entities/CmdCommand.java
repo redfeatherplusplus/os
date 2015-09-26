@@ -69,11 +69,12 @@ public class CmdCommand extends Command {
 	//create a process to execute the current command
 	@Override
 	public void execute(String workingDir) 
-			throws InterruptedException, IOException {
+			throws InterruptedException, IOException, ProcessException {
 		//prepare an executable process using ProcessBuilder
 		ProcessBuilder executable = generateExecutable(workingDir);
 		
 		//execute the process
+		System.out.println("Starting process: " + this.getCmdId());
 		Process process = executable.start();
 		process.waitFor();
 
@@ -82,7 +83,7 @@ public class CmdCommand extends Command {
 	}
 	
 	//return an executable ProcessBuilder
-	public ProcessBuilder generateExecutable(String workingDir) {
+	public ProcessBuilder generateExecutable(String workingDir) throws ProcessException {
 		//get the current command map to enable ID pairing
 		Map<String, Command> commands = Batch.getSingleton().getCommands();
 		
@@ -100,14 +101,28 @@ public class CmdCommand extends Command {
 		
 		//set input file if desired
 		if (!(inID == null || inID.isEmpty())) {
-			File inFile = new File(wd, commands.get(inID).getPath());	
-			executable.redirectInput(inFile);
+			//inID is not null, verify that the given inID exists
+			if (commands.get(inID) != null) {
+				File inFile = new File(wd, commands.get(inID).getPath());	
+				executable.redirectInput(inFile);
+			}
+			else {
+				throw new ProcessException("Unable to map inID '" + inID 
+						+ "' in command '" + this.getCmdId() + "' to a FileCommand.");
+			}
 		}
 
 		//set output file if desired
 		if (!(outID == null || outID.isEmpty())) {
-			File outFile = new File(wd, commands.get(outID).getPath());	
-			executable.redirectOutput(outFile);
+			//outID is not null, verify that the given outID exists
+			if (commands.get(outID) != null) {
+				File outFile = new File(wd, commands.get(outID).getPath());	
+				executable.redirectOutput(outFile);
+			}
+			else {
+				throw new ProcessException("Unable to map outID '" + outID 
+						+ "' in command '" + this.getCmdId() + "' to a FileCommand.");
+			}
 		}
 		
 		return(executable);

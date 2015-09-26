@@ -34,6 +34,7 @@ public class PipeCommand extends Command {
 			//add each CmdCommand to the list of filters
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element filter = (Element) node;
+				System.out.println("Command found: ");
 				filters.add(new CmdCommand(filter));
 			}
 		}
@@ -42,7 +43,7 @@ public class PipeCommand extends Command {
 	//create a process to execute the current command
 	@Override
 	public void execute(String workingDir) 
-			throws IOException, InterruptedException {
+			throws IOException, InterruptedException, ProcessException {
 		//for each filter create an executable ProcessBuilder
 		//then add that executable to a list of executables
 		LinkedList<ProcessBuilder> executables = new LinkedList<ProcessBuilder>();
@@ -57,22 +58,34 @@ public class PipeCommand extends Command {
 			ProcessBuilder sourceExecutable = executables.getFirst();
 			ProcessBuilder destinationExecutable = executables.getLast();
 			
+			//get id of each process for logging purposes
+			String pid_first = filters.get(0).getCmdId();
+			String pid_last = filters.get(executables.size() - 1).getCmdId();
+			
 			//start each executable
+			System.out.println("Starting process: " + pid_first);
 			final Process source = sourceExecutable.start();
+			
+			System.out.println("Starting process: " + pid_last);
 			final Process destination = destinationExecutable.start();
 			
 			//create a pipe of between the two executables via streams
-			InputStream is = source.getInputStream();
-			OutputStream os = destination.getOutputStream();
-			copyStreams(is,os);
+			System.out.println("Linking processes via I/O streams...");
+			InputStream sourceStream = source.getInputStream();
+			OutputStream destinationStream = destination.getOutputStream();
+			copyStreams(sourceStream, destinationStream);
 			
 			//wait for processes to finish execution, then close streams
 			source.waitFor();
+			sourceStream.close();
+			System.out.println("Process '" + pid_first + "' terminated.");
+			
 			destination.waitFor();
-			is.close();
-			os.close();
+			destinationStream.close();
+			System.out.println("Process '" + pid_last + "' terminated.");
 
-			System.out.println("Pipe terminated!");
+			//execution successful, print out message indicating so
+			System.out.println("Pipe Complete!");
 		}
 		else {
 			//for n>2 executables, to be implemented

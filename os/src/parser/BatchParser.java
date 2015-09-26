@@ -38,7 +38,7 @@ public class BatchParser
 	{
 		if(!filename.equals(null)) {
 			//we have received a filename, attempt to open and read that file
-			System.out.println("Opening " + filename);
+			System.out.println("Opening " + filename + "\n");
 			File f = new File(filename);
 			
 			//file opened successfully, add commands to the batch singleton
@@ -62,6 +62,7 @@ public class BatchParser
 					Element elem = (Element) node;
 					Command cmd = parseCommand(elem);
 					batch.addcommand(cmd);
+					System.out.println();
 				}
 			}
 		}
@@ -88,8 +89,10 @@ public class BatchParser
 			System.out.println("Parsing wd");
 			cmd = new WDCommand(elem);
 			
-			//set the working directory of the batch singleton
+			//wd parsed, set the working directory of the batch singleton
 			Batch.getSingleton().setWorkingDir(cmd.getPath());
+			System.out.println("Working Directory set to: " +
+					Batch.getSingleton().getWorkingDir());
 		}
 		else if ("file".equalsIgnoreCase(cmdName)) {
 			System.out.println("Parsing file");

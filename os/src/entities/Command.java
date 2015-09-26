@@ -2,6 +2,8 @@ package entities;
 
 import java.io.IOException;
 
+import errorLogging.ProcessException;
+
 public abstract class Command {
 	
 	private String type;  //type of command being processed      
@@ -14,7 +16,7 @@ public abstract class Command {
 	
 	//executes the current command
 	public abstract void execute(String workingDir) 
-			throws InterruptedException, IOException;
+			throws InterruptedException, IOException, ProcessException;
 	
 	//note parse() not included since its functionality is
 	//implemented in the constructor methods of specific commands
