@@ -70,6 +70,19 @@ public class CmdCommand extends Command {
 	@Override
 	public void execute(String workingDir) 
 			throws InterruptedException, IOException {
+		//prepare an executable process using ProcessBuilder
+		ProcessBuilder executable = generateExecutable(workingDir);
+		
+		//execute the process
+		Process process = executable.start();
+		process.waitFor();
+
+		//execution successful, print out message indicating so
+		System.out.println("Terminated! ExitValue: " + process.exitValue());
+	}
+	
+	//return an executable ProcessBuilder
+	public ProcessBuilder generateExecutable(String workingDir) {
 		//get the current command map to enable ID pairing
 		Map<String, Command> commands = Batch.getSingleton().getCommands();
 		
@@ -81,57 +94,52 @@ public class CmdCommand extends Command {
 		}
 
 		//create a new process that executes this command
-		ProcessBuilder builder = new ProcessBuilder(command);
-		builder.directory(new File(workingDir));
-		File wd = builder.directory();
+		ProcessBuilder executable = new ProcessBuilder(command);
+		executable.directory(new File(workingDir));
+		File wd = executable.directory();
 		
 		//set input file if desired
 		if (!(inID == null || inID.isEmpty())) {
 			File inFile = new File(wd, commands.get(inID).getPath());	
-			builder.redirectInput(inFile);
+			executable.redirectInput(inFile);
 		}
 
 		//set output file if desired
 		if (!(outID == null || outID.isEmpty())) {
 			File outFile = new File(wd, commands.get(outID).getPath());	
-			builder.redirectOutput(outFile);
+			executable.redirectOutput(outFile);
 		}
 		
-		//execute the process
-		Process process = builder.start();
-		process.waitFor();
-
-		//execution successful, print out message indicating so
-		System.out.println("Terminated! ExitValue: " + process.exitValue());
+		return(executable);
 	}
-
+	
 	//return a string describing this command's arguments
 	@Override
 	public String getArguments() {
 		//throw all non-null string arguments into a string builder
-		StringBuilder arguements = new StringBuilder();
+		StringBuilder arguments = new StringBuilder();
 		
 		//add the path of the executable
-		arguements.append("path: " + path + ", ");
+		arguments.append("path: " + path + ", ");
 
 		//add the executable's arguments 
 		if (!cmdArgs.isEmpty()) {
-			arguements.append("args: " + cmdArgs.toString() + ", ");
+			arguments.append("args: " + cmdArgs.toString() + ", ");
 		}
 
 		//add the file to be directed to the executable's stdin
 		if (!(inID == null || inID.isEmpty())) {
-			arguements.append("inID: " + inID + ", ");
+			arguments.append("inID: " + inID + ", ");
 		}
 
 		//add the file to direct the executable's stdout to
 		if (!(outID == null || outID.isEmpty())) {
-			arguements.append("outID: " + outID + ", ");
+			arguments.append("outID: " + outID + ", ");
 		}
 		
 		//remove leading comma and return arguments
-		arguements.delete(arguements.length() - 2, arguements.length());
-		return (arguements.toString());
+		arguments.delete(arguments.length() - 2, arguments.length());
+		return (arguments.toString());
 	}
 
 	//getter and setter methods
